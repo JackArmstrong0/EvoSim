@@ -11,14 +11,17 @@ public class Organism : MonoBehaviour
     public float energy;
     public float maxEnergy;
     public float energyDecreaseRate = 0.1f;
+    public float energyIncreaseAmount = 20f;
 
     public float moveInterval;
     private float timeSinceLastMove = 0f;
     private Vector3 moveDirection;
+    private GameObject targetFood;
     State activeState;
     private enum State
     {
-        Wandering
+        Wandering,
+        FoundFood
     }
 
     public void Initialize(float speed, float perception, float maxEnergy)
@@ -45,6 +48,8 @@ public class Organism : MonoBehaviour
         {
             case State.Wandering:
                 WanderingBehavior(); break;
+            case State.FoundFood:
+                FoundFoodBehavior(); break;
         }
 
         energy -= energyDecreaseRate * Time.deltaTime;
@@ -58,7 +63,7 @@ public class Organism : MonoBehaviour
 
         moveDirection = new Vector3(randomX, 0f, randomZ).normalized;
     }
-    
+
     void WanderingBehavior()
     {
         timeSinceLastMove += Time.deltaTime;
@@ -71,5 +76,70 @@ public class Organism : MonoBehaviour
         }
 
         transform.position += moveDirection * speed * Time.deltaTime;
+
+        CheckForFood();
+    }
+    void FoundFoodBehavior()
+    {
+        if (targetFood != null)
+        {
+            Vector3 foodDirection = (targetFood.transform.position - transform.position).normalized;
+            transform.position += foodDirection * speed * Time.deltaTime;
+
+            if (Vector3.Distance(transform.position, targetFood.transform.position) < 1.5f)
+            {
+                Eat();
+                targetFood = null;
+                activeState = State.Wandering;
+            }
+        }
+        else
+        {
+            activeState = State.Wandering;
+        }
+    }
+    void CheckForFood()
+    {
+        // Circle hitbox at pos with radius perception
+        Collider[] hitboxColliders = Physics.OverlapSphere(transform.position, perception);
+
+        float minDistance = Mathf.Infinity;
+        GameObject closestFood = null;
+
+        foreach (Collider collider in hitboxColliders)
+        {
+            if (collider.CompareTag("Food"))
+            {
+                float foodDistance = Vector3.Distance(transform.position, collider.transform.position);
+
+                if (foodDistance < minDistance)
+                {
+                    minDistance = foodDistance;
+                    closestFood = collider.gameObject;
+                }
+            }
+        }
+
+        // If there is food nearby, change state
+        if (closestFood != null)
+        {
+            targetFood = closestFood;
+            activeState = State.FoundFood;
+        }
+    }
+    
+    void Eat()
+    {
+        energy += energyIncreaseAmount;
+
+        if (energy > maxEnergy)
+        {
+            energy = maxEnergy;
+        }
+
+        if (targetFood != null)
+        {
+            Destroy(targetFood);
+        }
     }
 }
