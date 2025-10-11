@@ -1,10 +1,10 @@
 using UnityEngine;
 
-public class Camera : MonoBehaviour
+public class CameraMovement : MonoBehaviour
 {
     public float moveSpeed = 10f;
     public float shiftMult = 2f;
-    public float mouseSens = 100f;
+    public float mouseSens = 200f;
     private float camAngle = 0f;
 
     void Update()

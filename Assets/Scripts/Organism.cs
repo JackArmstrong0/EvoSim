@@ -12,7 +12,7 @@ public class Organism : MonoBehaviour
     public float maxEnergy;
     public float energyDecreaseRate = 0.1f;
 
-    public float moveInterval = 3f;
+    public float moveInterval;
     private float timeSinceLastMove = 0f;
     private Vector3 moveDirection;
     State activeState;
@@ -36,6 +36,7 @@ public class Organism : MonoBehaviour
     {
         activeState = State.Wandering;
         ChangeRandomDirection();
+        moveInterval = Random.Range(2f, 3f);
     }
 
     void Update()
@@ -66,6 +67,7 @@ public class Organism : MonoBehaviour
         {
             ChangeRandomDirection();
             timeSinceLastMove = 0f;
+            moveInterval = Random.Range(2f, 3f);
         }
 
         transform.position += moveDirection * speed * Time.deltaTime;
