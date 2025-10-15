@@ -37,12 +37,12 @@ public class CameraMovement : MonoBehaviour
         }
 
         Vector3 stepDirection = transform.right * stepX + transform.up * stepY + transform.forward * stepZ;
-        transform.position += stepDirection * speed * Time.deltaTime;
+        transform.position += stepDirection * speed * Time.unscaledDeltaTime;
     }
     void HandleRotation()
     {
-        float mouseX = Input.GetAxis("Mouse X") * mouseSens * Time.deltaTime;
-        float mouseY = Input.GetAxis("Mouse Y") * mouseSens * Time.deltaTime;
+        float mouseX = Input.GetAxis("Mouse X") * mouseSens * Time.unscaledDeltaTime;
+        float mouseY = Input.GetAxis("Mouse Y") * mouseSens * Time.unscaledDeltaTime;
 
         transform.Rotate(Vector3.up * mouseX); // Rotates Yaw, Horizontally
 
