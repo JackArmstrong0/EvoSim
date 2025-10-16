@@ -7,6 +7,12 @@ public class CameraMovement : MonoBehaviour
     public float mouseSens = 200f;
     private float camAngle = 0f;
 
+    void Start()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+
     void Update()
     {
         HandleMovement();
