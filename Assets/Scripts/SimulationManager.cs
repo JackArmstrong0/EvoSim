@@ -10,6 +10,11 @@ public class SimulationManager : MonoBehaviour
     float holdDurationToQuit = 2f;
     float holdTimer = 0f;
     bool isHolding = false;
+
+    GameObject confirmResetUI;
+    bool waitingForConfirm = false;
+    float confirmTimer = 0f;
+    float confirmTimeout = 2f;
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -45,7 +50,29 @@ public class SimulationManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.R))
         {
-            ResetSimulation();
+            if (!waitingForConfirm)
+            {
+                waitingForConfirm = true;
+                confirmTimer = 0f;
+                confirmResetUI.SetActive(true);
+            }
+            else
+            {
+                waitingForConfirm = false;
+                confirmResetUI.SetActive(false);
+                ResetSimulation();
+            }
+        }
+
+        if (waitingForConfirm)
+        {
+            confirmTimer += Time.unscaledDeltaTime;
+            if (confirmTimer >= confirmTimeout)
+            {
+                waitingForConfirm = false;
+                confirmTimer = 0f;
+                confirmResetUI.SetActive(false);
+            }
         }
 
         if (Input.GetKey(KeyCode.Comma) || Input.GetKey(KeyCode.Period))
