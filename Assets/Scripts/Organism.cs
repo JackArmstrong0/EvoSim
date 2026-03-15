@@ -1,7 +1,11 @@
 using UnityEngine;
+using Random = UnityEngine.Random;
+using System;
 
 public class Organism : MonoBehaviour
 {
+    public event Action<State> OnStateChanged;
+    public event Action<string, float> OnStatChanged;
     public float speed;
     public float perception;
 
@@ -17,11 +21,15 @@ public class Organism : MonoBehaviour
     private float timeSinceLastMove = 0f;
     private Vector3 moveDirection;
     private GameObject targetFood;
-    State activeState;
-    private enum State
+    
+    public State activeState;
+    public enum State
     {
         Wandering,
-        FoundFood
+        FoundFood,
+        SearchingForMate,
+        Reproducing,
+        Dying
     }
 
     public void Initialize(float speed, float perception, float maxEnergy)
@@ -37,7 +45,7 @@ public class Organism : MonoBehaviour
 
     void Start()
     {
-        activeState = State.Wandering;
+        SetState(State.Wandering);
         ChangeRandomDirection();
         moveInterval = Random.Range(2f, 3f);
     }
@@ -53,6 +61,7 @@ public class Organism : MonoBehaviour
         }
 
         energy -= energyDecreaseRate * Time.deltaTime;
+        AlertStatChanged("energy", energy);
     }
 
     void ChangeRandomDirection()
@@ -90,12 +99,12 @@ public class Organism : MonoBehaviour
             {
                 Eat();
                 targetFood = null;
-                activeState = State.Wandering;
+                SetState(State.Wandering);
             }
         }
         else
         {
-            activeState = State.Wandering;
+            SetState(State.Wandering);
         }
     }
     void CheckForFood()
@@ -124,7 +133,7 @@ public class Organism : MonoBehaviour
         if (closestFood != null)
         {
             targetFood = closestFood;
-            activeState = State.FoundFood;
+            SetState(State.FoundFood);
         }
     }
     
@@ -136,10 +145,24 @@ public class Organism : MonoBehaviour
         {
             energy = maxEnergy;
         }
+        // Change only after checking maxEnergy to avoid sending values above maxEnergy to the inspector
+        AlertStatChanged("energy", energy);
 
         if (targetFood != null)
         {
             Destroy(targetFood);
         }
+    }
+    void SetState(State newState)
+    {
+        if (activeState == newState) return;
+
+        activeState = newState;
+        OnStateChanged?.Invoke(activeState);
+    }
+
+    void AlertStatChanged(string statName, float value)
+    {
+        OnStatChanged?.Invoke(statName, value);
     }
 }

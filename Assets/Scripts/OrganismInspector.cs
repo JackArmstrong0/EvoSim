@@ -1,5 +1,6 @@
 using TMPro;
 using Unity.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -32,6 +33,7 @@ public class OrganismInspector : MonoBehaviour
     public TextMeshProUGUI generationText;
     public TextMeshProUGUI childrenText;
 
+    public Image statusDot;
 
     Organism organism;
     private void Start()
@@ -54,7 +56,6 @@ public class OrganismInspector : MonoBehaviour
         else if (currentTarget != null)
         {
             FollowTarget();
-            UpdateOrganismData();
         }
     }
 
@@ -119,6 +120,8 @@ public class OrganismInspector : MonoBehaviour
             Cursor.visible = true;
 
             ui.Hide();
+            organism.OnStatChanged -= UpdateOrganismData;
+            organism.OnStateChanged -= UpdateStatusDot;
         }
         else if (currentTarget != null)
         {
@@ -130,6 +133,10 @@ public class OrganismInspector : MonoBehaviour
             Cursor.visible = false;
 
             ui.Show();
+            organism.OnStatChanged += UpdateOrganismData;
+            organism.OnStateChanged += UpdateStatusDot;
+            UpdateOrganismData(null, 0f); // Force update all data immediately
+            UpdateStatusDot(organism.activeState); // Force update status dot immediately
         }
     }
 
@@ -140,21 +147,66 @@ public class OrganismInspector : MonoBehaviour
         Vector3 targetPos = currentTarget.transform.position;
         mainCamera.transform.LookAt(targetPos);
     }
-    private void UpdateOrganismData()
+    private void UpdateOrganismData(string statName, float newValue)
     {
         if (currentTarget == null) return;
 
         if (organism != null)
         {
-            energyText.text = organism.energy.ToString("F1");
-            maxEnergyText.text = organism.maxEnergy.ToString("F1");
-            speedText.text = organism.speed.ToString("F2");
-            perceptionText.text = organism.perception.ToString("F2");
-            ageText.text = organism.age.ToString("F0");
-            // generationText.text = organism.generation.ToString("F0");
-            // childrenText.text = organism.children.Count.ToString("F0");
-
-            
+            switch (statName)
+            {
+                case null: // Update all stats if statName is null
+                    energyText.text = organism.energy.ToString("F1");
+                    maxEnergyText.text = organism.maxEnergy.ToString("F1");
+                    speedText.text = organism.speed.ToString("F2");
+                    perceptionText.text = organism.perception.ToString("F2");
+                    ageText.text = organism.age.ToString("F0");
+                    // generationText.text = organism.generation.ToString("F0");
+                    // childrenText.text = organism.childrenCount.ToString("F0");
+                    break;
+                case "energy":
+                    energyText.text = newValue.ToString("F1");
+                    break;
+                case "maxEnergy":
+                    maxEnergyText.text = newValue.ToString("F1");
+                    break;
+                case "speed":
+                    speedText.text = newValue.ToString("F2");
+                    break;
+                case "perception":
+                    perceptionText.text = newValue.ToString("F2");
+                    break;
+                case "age":
+                    ageText.text = newValue.ToString("F0");
+                    break;
+                case "generation":
+                    generationText.text = newValue.ToString("F0");
+                    break;
+                case "children":
+                    childrenText.text = newValue.ToString("F0");
+                    break;
+            }
         }
+    }
+    private void UpdateStatusDot(Organism.State newState)
+    {
+            switch (newState)
+            {
+                case Organism.State.Wandering:
+                    statusDot.color = Color.yellow;
+                    break;
+                case Organism.State.FoundFood:
+                    statusDot.color = Color.green;
+                    break;
+                case Organism.State.SearchingForMate:
+                    statusDot.color = Color.magenta;
+                    break;
+                case Organism.State.Reproducing:
+                    statusDot.color = Color.red;
+                    break;
+                case Organism.State.Dying:
+                    statusDot.color = Color.gray;
+                    break;
+            }
     }
 }
