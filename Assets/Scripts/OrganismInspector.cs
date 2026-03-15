@@ -34,6 +34,10 @@ public class OrganismInspector : MonoBehaviour
     public TextMeshProUGUI childrenText;
 
     public Image statusDot;
+    public Image energyBarFill;
+
+    public GameObject perceptionRingPrefab;
+    private GameObject perceptionRingInstance = null;
 
     Organism organism;
     private void Start()
@@ -122,6 +126,12 @@ public class OrganismInspector : MonoBehaviour
             ui.Hide();
             organism.OnStatChanged -= UpdateOrganismData;
             organism.OnStateChanged -= UpdateStatusDot;
+
+            if (perceptionRingInstance != null)
+            {
+                Destroy(perceptionRingInstance);
+                perceptionRingInstance = null;
+            }
         }
         else if (currentTarget != null)
         {
@@ -137,6 +147,13 @@ public class OrganismInspector : MonoBehaviour
             organism.OnStateChanged += UpdateStatusDot;
             UpdateOrganismData(null, 0f); // Force update all data immediately
             UpdateStatusDot(organism.activeState); // Force update status dot immediately
+
+            perceptionRingInstance = Instantiate(perceptionRingPrefab, currentTarget.transform);
+            perceptionRingInstance.transform.localPosition = Vector3.zero; // Center on parent organism
+            perceptionRingInstance.transform.position -= new Vector3(0f, 1f, 0f); // Lower slightly so it's on the ground
+            float radius = organism.perception;
+            perceptionRingInstance.transform.localScale = new Vector3(radius * 2f, 0.01f, radius * 2f);
+
         }
     }
 
@@ -163,18 +180,24 @@ public class OrganismInspector : MonoBehaviour
                     ageText.text = organism.age.ToString("F0");
                     // generationText.text = organism.generation.ToString("F0");
                     // childrenText.text = organism.childrenCount.ToString("F0");
+                    UpdateEnergyBar();
                     break;
                 case "energy":
                     energyText.text = newValue.ToString("F1");
+                    UpdateEnergyBar();
                     break;
                 case "maxEnergy":
                     maxEnergyText.text = newValue.ToString("F1");
+                    UpdateEnergyBar();
                     break;
                 case "speed":
                     speedText.text = newValue.ToString("F2");
                     break;
                 case "perception":
                     perceptionText.text = newValue.ToString("F2");
+                    float radius = organism.perception;
+                    perceptionRingInstance.transform.localScale = new Vector3(radius * 2f, 0.01f, radius * 2f);
+
                     break;
                 case "age":
                     ageText.text = newValue.ToString("F0");
@@ -208,5 +231,13 @@ public class OrganismInspector : MonoBehaviour
                     statusDot.color = Color.gray;
                     break;
             }
+    }
+    void UpdateEnergyBar()
+    {
+        if (organism != null)
+        {
+            float energyRatio = Mathf.Clamp(organism.energy / organism.maxEnergy, 0f, 1f); // Ensure ratio between 0 and 1
+		    energyBarFill.fillAmount = energyRatio;
+        }
     }
 }

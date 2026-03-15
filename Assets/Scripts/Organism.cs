@@ -14,7 +14,7 @@ public class Organism : MonoBehaviour
 
     public float energy;
     public float maxEnergy;
-    public float energyDecreaseRate = 0.1f;
+    public float energyDecreaseRate = 5f;
     public float energyIncreaseAmount = 20f;
 
     public float moveInterval;
