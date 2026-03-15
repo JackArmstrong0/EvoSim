@@ -8,26 +8,35 @@ public class SimulationManager : MonoBehaviour
     float speedChangeRate = 1f;
 
     float holdDurationToQuit = 2f;
-    float holdTimer = 0f;
-    bool isHolding = false;
+    float quitHoldTimer = 0f;
+    bool isHoldingEsc = false;
 
-    GameObject confirmResetUI;
-    bool waitingForConfirm = false;
-    float confirmTimer = 0f;
-    float confirmTimeout = 2f;
+    float resetHoldTimer = 0f;
+    float holdDurationToReset = 2f;
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            isHolding = true;
-            holdTimer = 0f;
+            isHoldingEsc = true;
+            quitHoldTimer = 0f;
         }
 
-        if (isHolding)
+        if (Input.GetKeyUp(KeyCode.Escape))
         {
-            holdTimer += Time.unscaledDeltaTime;
+            if (quitHoldTimer < holdDurationToQuit)
+            {
+                TogglePause();
+            }
 
-            if (holdTimer >= holdDurationToQuit)
+            isHoldingEsc = false;
+            quitHoldTimer = 0f;
+        }
+
+        if (isHoldingEsc)
+        {
+            quitHoldTimer += Time.unscaledDeltaTime;
+
+            if (quitHoldTimer >= holdDurationToQuit)
             {
                 #if UNITY_EDITOR
                     UnityEditor.EditorApplication.isPlaying = false;
@@ -37,42 +46,18 @@ public class SimulationManager : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyUp(KeyCode.Escape))
+        if (Input.GetKey(KeyCode.R))
         {
-            if (holdTimer < holdDurationToQuit)
-            {
-                TogglePause();
-            }
+            resetHoldTimer += Time.unscaledDeltaTime;
 
-            isHolding = false;
-            holdTimer = 0f;
-        }
-
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            if (!waitingForConfirm)
+            if (resetHoldTimer >= holdDurationToReset)
             {
-                waitingForConfirm = true;
-                confirmTimer = 0f;
-                confirmResetUI.SetActive(true);
-            }
-            else
-            {
-                waitingForConfirm = false;
-                confirmResetUI.SetActive(false);
                 ResetSimulation();
             }
         }
-
-        if (waitingForConfirm)
+        else
         {
-            confirmTimer += Time.unscaledDeltaTime;
-            if (confirmTimer >= confirmTimeout)
-            {
-                waitingForConfirm = false;
-                confirmTimer = 0f;
-                confirmResetUI.SetActive(false);
-            }
+            resetHoldTimer = 0f;
         }
 
         if (Input.GetKey(KeyCode.Comma) || Input.GetKey(KeyCode.Period))
