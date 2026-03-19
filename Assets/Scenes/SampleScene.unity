@@ -508,13 +508,16 @@ MonoBehaviour:
   maxHighlightDistance: 50
   outlineMaterial: {fileID: 2100000, guid: 46881719f2e95f541913ab28445ae7af, type: 2}
   organismInspector: {fileID: 2023314227}
-  energyText: {fileID: 0}
-  maxEnergyText: {fileID: 0}
-  speedText: {fileID: 0}
-  perceptionText: {fileID: 0}
-  ageText: {fileID: 0}
-  generationText: {fileID: 0}
-  childrenText: {fileID: 0}
+  energyText: {fileID: 1188065733}
+  maxEnergyText: {fileID: 1865838830}
+  speedText: {fileID: 173206038}
+  perceptionText: {fileID: 1725012023}
+  ageText: {fileID: 1982540689}
+  generationText: {fileID: 1224665677}
+  childrenText: {fileID: 537023030}
+  statusDot: {fileID: 704987542}
+  energyBarFill: {fileID: 448645351}
+  perceptionRingPrefab: {fileID: 1978801036470237811, guid: 4cb82e17fd040ba44b4f709d1287b3b3, type: 3}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -668,10 +671,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 553999732}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -16.299, y: -0.000019073486}
-  m_SizeDelta: {x: 75.49, y: 13.728}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
+  m_AnchoredPosition: {x: 54.044, y: 0}
+  m_SizeDelta: {x: 108.088, y: 13.728}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &448645351
 MonoBehaviour:
@@ -693,11 +696,11 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
+  m_Sprite: {fileID: 21300000, guid: ceeb9a7c32aec6847a909fdbb2ae9229, type: 3}
+  m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
-  m_FillMethod: 4
+  m_FillMethod: 0
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
