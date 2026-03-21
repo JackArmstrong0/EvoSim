@@ -6,11 +6,15 @@ public class Organism : MonoBehaviour
 {
     public event Action<State> OnStateChanged;
     public event Action<string, float> OnStatChanged;
+    Rigidbody rb;
+    Renderer rend;
+
     public float speed;
     public float perception;
 
     public int age;
     public int maxAge;
+    private float birthTime;
 
     public float energy;
     public float maxEnergy;
@@ -45,13 +49,20 @@ public class Organism : MonoBehaviour
 
     void Start()
     {
+        rb = GetComponent<Rigidbody>();
+        rend = GetComponent<Renderer>();
+
         SetState(State.Wandering);
         ChangeRandomDirection();
         moveInterval = Random.Range(2f, 3f);
+        birthTime = Time.time;
     }
 
     void Update()
     {
+        if (activeState == State.Dying)
+            return; // Don't do anything if dying
+
         switch (activeState)
         {
             case State.Wandering:
@@ -60,8 +71,15 @@ public class Organism : MonoBehaviour
                 FoundFoodBehavior(); break;
         }
 
+        age = Mathf.FloorToInt(Time.time - birthTime);
+        AlertStatChanged("age", age);
         energy -= energyDecreaseRate * Time.deltaTime;
         AlertStatChanged("energy", energy);
+        
+        if (age >= maxAge || energy <= 0)
+        {
+            Die();
+        }
     }
 
     void ChangeRandomDirection()
@@ -152,6 +170,14 @@ public class Organism : MonoBehaviour
         {
             Destroy(targetFood);
         }
+    }
+    void Die()
+    {
+        SetState(State.Dying);
+        rb.constraints = RigidbodyConstraints.None;
+        rend.material.color = Color.gray;
+        rb.AddTorque(moveDirection, ForceMode.Impulse);
+        Destroy(gameObject, 5f);
     }
     void SetState(State newState)
     {
