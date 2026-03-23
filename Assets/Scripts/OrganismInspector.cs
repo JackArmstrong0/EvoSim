@@ -178,8 +178,8 @@ public class OrganismInspector : MonoBehaviour
                     speedText.text = organism.speed.ToString("F2");
                     perceptionText.text = organism.perception.ToString("F2");
                     ageText.text = organism.age.ToString("F0");
-                    // generationText.text = organism.generation.ToString("F0");
-                    // childrenText.text = organism.childrenCount.ToString("F0");
+                    generationText.text = organism.generation.ToString("F0");
+                    childrenText.text = organism.childrenCount.ToString("F0");
                     UpdateEnergyBar();
                     break;
                 case "energy":
