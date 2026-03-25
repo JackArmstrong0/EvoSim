@@ -1,5 +1,9 @@
+using Microsoft.Unity.VisualStudio.Editor;
 using NUnit.Framework;
 using UnityEngine;
+using TMPro;
+using UnityEngine.UI;
+using Image = UnityEngine.UI.Image;
 
 public class SimulationManager : MonoBehaviour
 {
@@ -13,6 +17,19 @@ public class SimulationManager : MonoBehaviour
 
     float resetHoldTimer = 0f;
     float holdDurationToReset = 2f;
+
+    public Image runningSign;
+    public Image pausedSign;
+    public TextMeshProUGUI simSpeedText;
+    public TextMeshProUGUI statusText;
+    void Start()
+    {
+        simSpeedText.text = Time.timeScale.ToString("0.0") + "x";
+        statusText.text = "RUNNING";
+        statusText.color = Color.green;
+        pausedSign.enabled = false;
+        runningSign.enabled = true;
+    }
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -63,6 +80,7 @@ public class SimulationManager : MonoBehaviour
         if (Input.GetKey(KeyCode.Comma) || Input.GetKey(KeyCode.Period))
         {
             ChangeSpeed(Input.GetKey(KeyCode.Comma), Input.GetKey(KeyCode.Period));
+            simSpeedText.text = Time.timeScale.ToString("0.0") + "x";
         }
     }
 
@@ -72,12 +90,20 @@ public class SimulationManager : MonoBehaviour
         {
             Time.timeScale = originalTimeScale;
             isPaused = false;
+            runningSign.enabled = true;
+            pausedSign.enabled = false;
+            statusText.text = "RUNNING";
+            statusText.color = Color.green;
         }
         else
         {
             originalTimeScale = Time.timeScale;
             Time.timeScale = 0f;
             isPaused = true;
+            runningSign.enabled = false;
+            pausedSign.enabled = true;
+            statusText.text = "PAUSED";
+            statusText.color = Color.red;
         }
     }
     void ResetSimulation()

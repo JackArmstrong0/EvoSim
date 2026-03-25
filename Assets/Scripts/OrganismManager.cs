@@ -16,8 +16,8 @@ public static float maxMutation = 25f;
             Vector3 pos = GetRandomPos();
             
             // Assign slightly varying, randomised values for each stat
-            float speed = Random.Range(3f, 7f); // 5±2
-            float perception = Random.Range(6f, 10f); // 8±2
+            float speed = Random.Range(6f, 10f); // 8±2
+            float perception = Random.Range(8f, 12f); // 10±2
             float maxEnergy = Random.Range(90f, 110f); // 100±10
             int generation = 1; // First generation is generation 1
             CreateOrganism(name, pos, speed, perception, maxEnergy, generation);

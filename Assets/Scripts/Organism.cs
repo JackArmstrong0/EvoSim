@@ -20,8 +20,8 @@ public class Organism : MonoBehaviour
 
     public float energy;
     public float maxEnergy;
-    public float energyDecreaseRate = 5f;
-    public float energyIncreaseAmount = 20f;
+    private float energyDecreaseRate = 2f;
+    private float energyIncreaseAmount = 20f;
 
     public float moveInterval;
     private float timeSinceLastMove = 0f;
@@ -50,7 +50,7 @@ public class Organism : MonoBehaviour
     public void Initialize(float speed, float perception, float maxEnergy, int generation)
     {
         age = 0;
-        maxAge = 100;
+        maxAge = 200;
         this.generation = generation;
 
         this.speed = speed;

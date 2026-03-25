@@ -4,9 +4,9 @@ public class UIManager : MonoBehaviour
 {
     public RectTransform panel;
     public float slideSpeed = 50f;
-    private bool isVisible = false;
-    private Vector2 hiddenPosition = new Vector2(763f, -800f);
-    private Vector2 visiblePosition = new Vector2(763f, -183f);
+    public bool isVisible = false;
+    public Vector2 hiddenPosition;
+    public Vector2 visiblePosition;
     Vector2 targetPosition;
 
     void Start()

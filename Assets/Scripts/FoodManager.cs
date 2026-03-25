@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class FoodManager : MonoBehaviour
@@ -7,7 +8,7 @@ public class FoodManager : MonoBehaviour
 
     private float spawnInterval = 5f;
     private float timeSinceLastSpawn = 0f;
-    public float foodSpawnRate = 1f;
+    public static float foodSpawnRate = 3f;
 
     void Update()
     {

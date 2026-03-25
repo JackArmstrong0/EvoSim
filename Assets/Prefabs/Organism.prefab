@@ -130,8 +130,13 @@ MonoBehaviour:
   maxAge: 0
   energy: 0
   maxEnergy: 0
-  energyDecreaseRate: 0.1
+  energyDecreaseRate: 0
+  energyIncreaseAmount: 20
   moveInterval: 3
+  childrenCount: 0
+  generation: 0
+  orgManager: {fileID: 0}
+  activeState: 0
 --- !u!54 &5613161677595213756
 Rigidbody:
   m_ObjectHideFlags: 0
